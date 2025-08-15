@@ -125,25 +125,6 @@ Options:
   -h                    display help for command
 ```
 
-## DevelopmentCompile Latex Document. FILEPATH must be an absolute path
-
-This project is built with TypeScript and uses the Model Context Protocol SDK. The repository includes:
-
-- **`src/just-mcp.ts`**: Main MCP server implementation
-- **`src/justfile-parser.ts`**: Justfile parsing logic
-- **`src/cli.ts`**: Command-line interface
-- **`tests/`**: Comprehensive test suite with integration tests
-
-### Running Tests
-
-```bash
-# Run all tests
-just test
-
-# Run specific test file
-just test tests/integration.test.ts
-```
-
 ## Examples
 
 This section demonstrates a practical Justfile for a development project and the MCP tools it generates. Each recipe becomes a tool that AI assistants can discover and execute.
@@ -233,6 +214,16 @@ There are other approaches to integrating Just with MCP:
 - **[just-mcp](https://github.com/PromptExecution/just-mcp)** - A Rust-based MCP server that provides more comprehensive Justfile support and handling. This cargo package offers additional features beyond just exposing recipes as tools to the LLM.
 
 This repository (`just-runner-mcp`) takes a minimal approach, focusing specifically on exposing Just recipes as MCP tools for AI assistants to discover and execute.
+
+## Development
+
+```bash
+# Run all tests
+just test
+
+# Run specific test file
+just test tests/integration.test.ts
+```
 
 ## License
 
