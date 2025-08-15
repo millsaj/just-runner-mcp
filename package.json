@@ -1,9 +1,9 @@
 {
   "name": "just-runner-mcp",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "Josh Mills <millsaj@pm.me> (https://github.com/millsaj)",
   "type": "module",
-  "main": "dist/just-mcp.js",
+  "main": "dist/cli.js",
   "keywords": [
     "modelcontextprotocol",
     "mcp",

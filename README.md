@@ -18,6 +18,9 @@ npx just-runner-mcp --justfile ./path/to/your/justfile
 
 # Or run from current directory (will search for Justfile)
 npx just-runner-mcp
+
+# Test via MCP inspector web UI
+npx -y @modelcontextprotocol/inspector -- npx -y just-runner-mcp --justfile tests/support/basic.justfile
 ```
 
 ### MCP Client Configuration
@@ -234,4 +237,3 @@ This repository (`just-runner-mcp`) takes a minimal approach, focusing specifica
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENS.txt) file for details.
-
