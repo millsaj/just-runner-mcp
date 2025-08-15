@@ -3,6 +3,7 @@
 A Model Context Protocol (MCP) server that exposes [Just](https://github.com/casey/just) recipes as MCP tools, allowing AI assistants to discover and execute project commands defined in Justfiles.
 
 [![GitMCP](https://img.shields.io/endpoint?url=https://gitmcp.io/badge/millsaj/just-runner-mcp)](https://gitmcp.io/millsaj/just-runner-mcp)
+[![NPM Version](https://img.shields.io/npm/v/just-runner-mcp)](https://www.npmjs.com/package/just-runner-mcp)
 
 ## Quick Start
 
@@ -44,38 +45,6 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 - **Self-documenting**: Recipes can include documentation comments that describe what they do
 - **Parameterized**: Recipes can accept arguments, making them flexible and reusable
 - **Dependency management**: Recipes can depend on other recipes, ensuring proper execution order
-
-Here's an example justfile that demonstrates the versatility:
-
-```just
-# Build the project
-build:
-    cargo build --release
-
-# Run tests with optional filter
-test filter="":
-    #!/usr/bin/env python3
-    import subprocess
-    import sys
-    
-    cmd = ["cargo", "test"]
-    if "{{filter}}":
-        cmd.extend(["--", "{{filter}}"])
-    
-    subprocess.run(cmd, check=True)
-
-# Deploy to production (requires confirmation)
-[confirm]
-deploy: build test
-    ./scripts/deploy.sh --env production
-
-# Clean build artifacts
-clean:
-    cargo clean
-    rm -rf target/
-```
-
-When exposed through this MCP server, each recipe becomes a tool that AI assistants can discover and execute, making project automation accessible and discoverable.
 
 ## Tool Generation
 
@@ -253,4 +222,16 @@ When you run `just-runner-mcp --list-tools`, you get the following JSON response
 ```
 
 With these tools available, an AI assistant can help you with common development tasks like "install the dependencies", "start the dev server on port 8080", "run the tests", or "deploy to staging".
+
+## Alternatives
+
+There are other approaches to integrating Just with MCP:
+
+- **[just-mcp](https://github.com/PromptExecution/just-mcp)** - A Rust-based MCP server that provides more comprehensive Justfile support and handling. This cargo package offers additional features beyond just exposing recipes as tools to the LLM.
+
+This repository (`just-runner-mcp`) takes a minimal approach, focusing specifically on exposing Just recipes as MCP tools for AI assistants to discover and execute.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENS.txt) file for details.
 

@@ -4,6 +4,13 @@
   "author": "Josh Mills <millsaj@pm.me> (https://github.com/millsaj)",
   "type": "module",
   "main": "dist/just-mcp.js",
+  "keywords": [
+    "modelcontextprotocol",
+    "mcp",
+    "just",
+    "runner",
+    "cli"
+  ],
   "bin": {
     "just-mcp": "dist/cli.js"
   },
