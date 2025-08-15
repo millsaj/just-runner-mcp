@@ -11,7 +11,7 @@ export interface MCPToolDefinition {
 }
 
 export function recipeToTool(recipe: JustRecipe): MCPToolDefinition {
-	const name = `just ${recipe.name}`;
+	const name = `just_${recipe.name}`;
 	const properties: Record<string, { type: string; description: string }> = {};
 	const required: string[] = [];
 	for (const param of recipe.parameters) {

@@ -101,10 +101,10 @@ describe('just-mcp integration (MCP stdio)', () => {
             const actualTools = listToolsResult.tools || listToolsResult;
 
             expect(actualTools.length, 'Should list at least one tool').toBeGreaterThan(0);
-            const found = actualTools.find((t: any) => t.name === "just hello");
-            expect(found, 'Tool just hello should be listed').toBeTruthy();
+            const found = actualTools.find((t: any) => t.name === "just_hello");
+            expect(found, 'Tool just_hello should be listed').toBeTruthy();
 
-            const actualResult = await client.callTool({ name: 'just hello' });
+            const actualResult = await client.callTool({ name: 'just_hello' });
             expect(getTextContent(actualResult.content as any[]), 'Output should contain hello message').toContain('Hello from default Justfile');
         }, 10000);
     });
@@ -134,11 +134,11 @@ describe('just-mcp integration (MCP stdio)', () => {
             client = await createConnectedClient({ justfile: justfilePath });
             
             // Test successful recipe
-            const successResult = await client.callTool({ name: 'just success', arguments: {} });
+            const successResult = await client.callTool({ name: 'just_success', arguments: {} });
             expect(getTextContent(successResult.content as any[])).toContain('Success!');
             
             // Test failing recipe
-            const failResult = await client.callTool({ name: 'just failure', arguments: {} });
+            const failResult = await client.callTool({ name: 'just_failure', arguments: {} });
             expect(getTextContent(failResult.content as any[])).toContain('exit code: 1');
         });
     });

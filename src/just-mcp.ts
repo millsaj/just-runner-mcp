@@ -74,7 +74,7 @@ export async function startJustMcpServer(opts: JustMcpOptions = {}) {
 		server.setRequestHandler(CallToolRequestSchema, async (request) => {
 		try {
 			const { name, arguments: args } = request.params;
-			const recipeName = name.replace(/^just /, '');
+			const recipeName = name.replace(/^just_/, '');
 			const recipe = recipes.find((r) => r.name === recipeName);
 			if (!recipe) throw new Error(`Unknown Just recipe: ${name}`);
 			// Build just command
