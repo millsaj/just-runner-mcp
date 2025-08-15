@@ -11,23 +11,24 @@ export interface MCPToolDefinition {
 }
 
 export function recipeToTool(recipe: JustRecipe): MCPToolDefinition {
-	const name = `just_${recipe.name}`;
+	const name = recipe.name;
 	const properties: Record<string, { type: string; description: string }> = {};
 	const required: string[] = [];
 	for (const param of recipe.parameters) {
 		properties[param.name] = {
 			type: 'string',
 			description: param.required
-				? 'Required parameter'
+				? 'Required'
 				: param.default !== null
-				? `Optional parameter (default: ${param.default})`
-				: 'Optional parameter',
+				? `Optional (default: ${param.default})`
+				: 'Optional',
 		};
 		if (param.required) required.push(param.name);
 	}
+
 	return {
 		name,
-		description: recipe.description,
+		description: `Run just recipe: ${recipe.name}\n${recipe.description}`,
 		inputSchema: {
 			type: 'object',
 			properties,

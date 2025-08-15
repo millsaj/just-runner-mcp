@@ -76,28 +76,28 @@ Would expose the following tools to the MCP client:
 {
   "tools": [
     {
-      "name": "just compile-latex",
-      "description": "Compile Latex Document. FILEPATH must be an absolute path",
+      "name": "compile-latex",
+      "description": "Run just recipe: compile-latex\nCompile Latex Document. FILEPATH must be an absolute path",
       "inputSchema": {
         "type": "object",
         "properties": {
           "FILEPATH": {
             "type": "string",
-            "description": "Parameter: FILEPATH (required)"
+            "description": "Required"
           }
         },
         "required": ["FILEPATH"]
       }
     },
     {
-      "name": "just compile-typst",
-      "description": "Compile Typst Document. FILEPATH must be an absolute path",
+      "name": "compile-typst",
+      "description": "Run just recipe: compile-typst\nCompile Typst Document. FILEPATH must be an absolute path",
       "inputSchema": {
         "type": "object",
         "properties": {
           "FILEPATH": {
             "type": "string",
-            "description": "Parameter: FILEPATH (required)"
+            "description": "Required"
           }
         },
         "required": ["FILEPATH"]
@@ -161,8 +161,8 @@ When you run `just-runner-mcp --list-tools`, you get the following JSON response
 {
   "tools": [
     {
-      "name": "just install",
-      "description": "Install project dependencies",
+      "name": "install",
+      "description": "Run just recipe: install\nInstall project dependencies",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -170,8 +170,8 @@ When you run `just-runner-mcp --list-tools`, you get the following JSON response
       }
     },
     {
-      "name": "just dev",
-      "description": "Start the development server",
+      "name": "dev",
+      "description": "Run just recipe: dev\nStart the development server",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -184,8 +184,8 @@ When you run `just-runner-mcp --list-tools`, you get the following JSON response
       }
     },
     {
-      "name": "just test",
-      "description": "Run all tests",
+      "name": "test",
+      "description": "Run just recipe: test\n",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -193,8 +193,8 @@ When you run `just-runner-mcp --list-tools`, you get the following JSON response
       }
     },
     {
-      "name": "just deploy-staging",
-      "description": "Deploy to staging environment",
+      "name": "deploy-staging",
+      "description": "Run just recipe: deploy-staging\nDeploy to staging environment",
       "inputSchema": {
         "type": "object",
         "properties": {},

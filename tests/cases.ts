@@ -18,7 +18,7 @@ const cases: ToolCase[] = [
     justfile: "basic.justfile",
     tools: [
       {
-        name: "just_hello",
+        name: "hello",
         input: {},
         outputExact: "Hello, world!"
       }
@@ -29,17 +29,17 @@ const cases: ToolCase[] = [
     justfile: "parameters.justfile",
     tools: [
       {
-        name: "just_greet",
+        name: "greet",
         input: { "name": "Alice" },
         outputExact: "Hello Alice!"
       },
       {
-        name: "just_serve",
+        name: "serve",
         input: {},
         outputExact: "Starting server on port 3000"
       },
       {
-        name: "just_serve",
+        name: "serve",
         input: { "port": 4000 },
         outputExact: "Starting server on port 4000"
       }
@@ -50,12 +50,12 @@ const cases: ToolCase[] = [
     justfile: "dependencies.justfile",
     tools: [
       {
-        name: "just_build",
+        name: "build",
         input: {},
         outputExact: "Building..."
       },
       {
-        name: "just_test",
+        name: "test",
         input: {},
         outputContains: "Building..."
       }
@@ -66,7 +66,7 @@ const cases: ToolCase[] = [
     justfile: "shebang.justfile",
     tools: [
       {
-        name: "just_node-script",
+        name: "node-script",
         input: {},
         outputContains: "Node.js says hello"
       }
@@ -82,12 +82,12 @@ const cases: ToolCase[] = [
     justfile: "naming.justfile",
     tools: [
       {
-        name: "just_test-build",
+        name: "test-build",
         input: {},
         outputExact: "Test build complete"
       },
       {
-        name: "just_deploy_prod",
+        name: "deploy_prod",
         input: {},
         outputExact: "Deploying to prod"
       }
@@ -98,12 +98,12 @@ const cases: ToolCase[] = [
     justfile: "mixed_params.justfile",
     tools: [
       {
-        name: "just_deploy",
+        name: "deploy",
         input: { "env": "staging" },
         outputContains: "Deploying version latest to staging"
       },
       {
-        name: "just_deploy",
+        name: "deploy",
         input: { "env": "prod", "version": "1.0.0" },
         outputContains: "Deploying version 1.0.0 to prod"
       }
@@ -114,12 +114,12 @@ const cases: ToolCase[] = [
     justfile: "exit_codes.justfile",
     tools: [
       {
-        name: "just_success",
+        name: "success",
         input: {},
         outputExact: "Success!"
       },
       {
-        name: "just_failure",
+        name: "failure",
         input: {},
         outputContains: "exit code: 1"
       }

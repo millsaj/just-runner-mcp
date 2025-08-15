@@ -30,11 +30,9 @@ export async function validateEnvironment(justBinary: string, justfile: string):
 	if (!found) {
 		throw new Error(`'just' binary not found: ${justBinary} (also tried npx just)`);
 	}
-	// Check justfile
 	if (!existsSync(justfile)) {
 		throw new Error(`Justfile not found: ${justfile}`);
 	}
-	// Check just --list works
 	const { exitCode, stderr } = await runCommand(resolvedBinary.split(' ').concat(['--list', '--justfile', justfile]));
 	if (exitCode !== 0) {
 		throw new Error(`Cannot list Just recipes: ${stderr}`);
@@ -63,7 +61,7 @@ export async function startJustMcpServer(opts: JustMcpOptions = {}) {
 	const tools = recipes.map(recipeToTool);
 	const server = new Server(
 		{
-			name: 'just-mcp',
+			name: `Just MCP server for ${justfile}`,
 			version: '0.1.0',
 		},
 		{
@@ -73,10 +71,9 @@ export async function startJustMcpServer(opts: JustMcpOptions = {}) {
 	server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 		server.setRequestHandler(CallToolRequestSchema, async (request) => {
 		try {
-			const { name, arguments: args } = request.params;
-			const recipeName = name.replace(/^just_/, '');
+			const { name: recipeName, arguments: args } = request.params;
 			const recipe = recipes.find((r) => r.name === recipeName);
-			if (!recipe) throw new Error(`Unknown Just recipe: ${name}`);
+			if (!recipe) throw new Error(`Unknown Just recipe: ${recipeName}`);
 			// Build just command
 			const cmd = [justBinary, '--justfile', justfile, recipe.name];
 			
