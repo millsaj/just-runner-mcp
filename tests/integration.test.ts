@@ -12,6 +12,14 @@ import cases from './cases';
 const CLI = path.join(__dirname, '../dist/cli.js');
 const SUPPORT_DIR = path.join(__dirname, 'support');
 
+// Helper function to extract text content from MCP content array
+function getTextContent(content: any[]): string {
+    return content
+        .filter(item => item.type === 'text')
+        .map(item => item.text)
+        .join(' ');
+}
+
 // Helper to create and connect a client
 async function createConnectedClient(options: { justfile?: string, justBinary?: string, cwd?: string }) {
     const args = [CLI];
@@ -76,9 +84,9 @@ describe('just-mcp integration (MCP stdio)', () => {
                         }
                         const actualResult = await client.callTool({ name: expectedTool.name, arguments: expectedTool.input });
                         if (expectedTool.outputExact) {
-                            expect(String(actualResult.output)).toContain(expectedTool.outputExact);
+                            expect(getTextContent(actualResult.content as any[])).toContain(expectedTool.outputExact);
                         } else if (expectedTool.outputContains) {
-                            expect(String(actualResult.output)).toContain(expectedTool.outputContains);
+                            expect(getTextContent(actualResult.content as any[])).toContain(expectedTool.outputContains);
                         }
                     });
                 }
@@ -97,7 +105,7 @@ describe('just-mcp integration (MCP stdio)', () => {
             expect(found, 'Tool just hello should be listed').toBeTruthy();
 
             const actualResult = await client.callTool({ name: 'just hello' });
-            expect(String(actualResult.output), 'Output should contain hello message').toContain('Hello from default Justfile');
+            expect(getTextContent(actualResult.content as any[]), 'Output should contain hello message').toContain('Hello from default Justfile');
         }, 10000);
     });
 
@@ -107,7 +115,7 @@ describe('just-mcp integration (MCP stdio)', () => {
             const nonExistentToolName = 'this_tool_does_not_exist';
 
             let actualResult = await client.callTool({ name: nonExistentToolName });
-            expect(actualResult.output, 'Output should indicate unknown tool').toContain("Unknown Just recipe");
+            expect(getTextContent(actualResult.content as any[]), 'Output should indicate unknown tool').toContain("Unknown Just recipe");
         });
     });
 
@@ -127,11 +135,11 @@ describe('just-mcp integration (MCP stdio)', () => {
             
             // Test successful recipe
             const successResult = await client.callTool({ name: 'just success', arguments: {} });
-            expect(String(successResult.output)).toContain('Success!');
+            expect(getTextContent(successResult.content as any[])).toContain('Success!');
             
             // Test failing recipe
             const failResult = await client.callTool({ name: 'just failure', arguments: {} });
-            expect(String(failResult.output)).toContain('exit code: 1');
+            expect(getTextContent(failResult.content as any[])).toContain('exit code: 1');
         });
     });
 });

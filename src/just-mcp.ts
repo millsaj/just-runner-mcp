@@ -53,7 +53,6 @@ export async function startJustMcpServer(opts: JustMcpOptions = {}) {
 		console.error('[just-mcp] Startup error:\n', err?.message || err);
 		process.exit(1);
 	}
-	// Use resolvedBinary for all just invocations
 	let recipes: JustRecipe[] = [];
 	try {
 		recipes = await parseJustList(justBinary, justfile);
@@ -101,9 +100,9 @@ export async function startJustMcpServer(opts: JustMcpOptions = {}) {
 			let resultText = stdout;
 			if (stderr) resultText += `\n[stderr (includes trace logging by just)]\n${stderr}`;
 			if (exitCode !== 0) resultText += `\n[exit code: ${exitCode}]`;
-			return { output: resultText };
+			return { content: [{ type: "text", text: resultText }] };
 		} catch (err: any) {
-			return { output: `[just-mcp] Tool execution error:\n${err?.message || err}` };
+			return { content: [{ type: "text", text: `[just-mcp] Tool execution error:\n${err?.message || err}` }] };
 		}
 	});
 	const transport = new StdioServerTransport();

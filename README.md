@@ -1,4 +1,4 @@
-# Just Runner MCP Server
+# Just an MCP Command Runner
 
 A Model Context Protocol (MCP) server that exposes [Just](https://github.com/casey/just) recipes as MCP tools, allowing AI assistants to discover and execute project commands defined in Justfiles.
 
@@ -40,7 +40,7 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 
 ## Why Just?
 
-[Just](https://github.com/casey/just) is a command runner that saves and runs project-specific commands in a `justfile`. It's an excellent choice for exposing project automation to AI assistants because:
+[Just](https://github.com/casey/just) is a command runner that saves and runs project-specific commands in a `justfile`. It's an effective choice for exposing commands/scripts to AI assistants because:
 
 - **Simple syntax**: Justfiles use a clean, make-inspired syntax that's easy to read and write
 - **Cross-platform**: Works on Linux, macOS, Windows, and other Unix-like systems  
