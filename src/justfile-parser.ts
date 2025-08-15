@@ -66,7 +66,23 @@ export async function parseJustList(justBinary = 'just', justfilePath = 'Justfil
 		const tokens = recipePart.trim().split(/\s+/);
 		if (!tokens[0]) continue;
 		const name = tokens[0];
-		const parameters = tokens.slice(1).map((param) => ({ name: param, required: true, default: null }));
+		const parameters = tokens.slice(1).map((param) => {
+			// Handle parameters with defaults like 'port="3000"'
+			const equalsMatch = param.match(/^(\w+)="?([^"]*)"?$/);
+			if (equalsMatch) {
+				return {
+					name: equalsMatch[1],
+					required: false,
+					default: equalsMatch[2]
+				};
+			}
+			// Handle required parameters (no default)
+			return {
+				name: param,
+				required: true,
+				default: null
+			};
+		});
 		let description = comment ? comment.trim() : `Execute the ${name} recipe`;
 		recipes.push({ name, parameters, description });
 	}

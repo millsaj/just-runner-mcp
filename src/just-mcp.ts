@@ -72,21 +72,34 @@ export async function startJustMcpServer(opts: JustMcpOptions = {}) {
 		}
 	);
 	server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
-	server.setRequestHandler(CallToolRequestSchema, async (request) => {
+		server.setRequestHandler(CallToolRequestSchema, async (request) => {
 		try {
 			const { name, arguments: args } = request.params;
-			const recipeName = name.replace(/^just_/, '').replace(/_/g, '-');
+			const recipeName = name.replace(/^just /, '');
 			const recipe = recipes.find((r) => r.name === recipeName);
-			if (!recipe) throw new Error(`Unknown tool: ${name}`);
+			if (!recipe) throw new Error(`Unknown Just recipe: ${name}`);
 			// Build just command
 			const cmd = [justBinary, '--justfile', justfile, recipe.name];
+			
+			// Add parameters in order, using provided values or defaults
 			for (const param of recipe.parameters) {
-				const val = args?.[param.name];
-				if (val !== undefined) cmd.push(String(val));
+				const providedValue = args?.[param.name];
+				if (providedValue !== undefined) {
+					// Use provided value
+					cmd.push(String(providedValue));
+				} else if (!param.required && param.default !== null) {
+					// Use default value for optional parameters
+					cmd.push(param.default);
+				} else if (param.required) {
+					// Required parameter not provided - let just handle the error
+					// Don't add anything, just will show the error
+				}
+				// For optional parameters without defaults, don't add anything
 			}
+			
 			const { stdout, stderr, exitCode } = await runCommand(cmd, '.', timeout);
 			let resultText = stdout;
-			if (stderr) resultText += `\n[stderr]\n${stderr}`;
+			if (stderr) resultText += `\n[stderr (includes trace logging by just)]\n${stderr}`;
 			if (exitCode !== 0) resultText += `\n[exit code: ${exitCode}]`;
 			return { output: resultText };
 		} catch (err: any) {

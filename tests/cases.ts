@@ -14,74 +14,115 @@ export type ToolCase = {
 
 const cases: ToolCase[] = [
   {
-    name: "simple",
-    justfile: "simple.justfile",
-    tools: [
-        {
-            name: "just_build",
-            input: {"target": "foo"},
-            outputExact: "Building for foo"
-        },
-        {
-            name: "just_deploy",
-            input: {"env": "prod", "version": "1.2.3"},
-            outputExact: "Deploying 1.2.3 to prod"
-        }
-    ]
-  },
-  {
-    name: "no_params",
-    justfile: "no_params.justfile",
+    name: "basic_recipe",
+    justfile: "basic.justfile",
     tools: [
       {
-        name: "just_test",
+        name: "just hello",
         input: {},
-        outputExact: "Running tests"}
+        outputExact: "Hello, world!"
+      }
     ]
   },
   {
-    name: "no_description",
-    justfile: "no_description.justfile",
+    name: "recipe_with_parameters",
+    justfile: "parameters.justfile",
     tools: [
-        {
-            name: "just_hello",
-            input: {"name": "Jen"},
-            outputExact: "Hello Jen!"
-        }
+      {
+        name: "just greet",
+        input: { "name": "Alice" },
+        outputExact: "Hello Alice!"
+      },
+      {
+        name: "just serve",
+        input: {},
+        outputExact: "Starting server on port 3000"
+      },
+      {
+        name: "just serve",
+        input: { "port": 4000 },
+        outputExact: "Starting server on port 4000"
+      }
     ]
   },
   {
-    name: "malformed",
+    name: "recipe_with_dependencies",
+    justfile: "dependencies.justfile",
+    tools: [
+      {
+        name: "just build",
+        input: {},
+        outputExact: "Building..."
+      },
+      {
+        name: "just test",
+        input: {},
+        outputContains: "Building..."
+      }
+    ]
+  },
+  {
+    name: "shebang_recipe",
+    justfile: "shebang.justfile",
+    tools: [
+      {
+        name: "just node-script",
+        input: {},
+        outputContains: "Node.js says hello"
+      }
+    ]
+  },
+  {
+    name: "malformed_justfile",
     justfile: "malformed.justfile",
     expectError: true
   },
   {
-    name: "large_output",
-    justfile: "large_output.justfile",
+    name: "recipe_naming_edge_cases",
+    justfile: "naming.justfile",
     tools: [
-        {
-            name: "just_spam",
-            input: {},
-            outputContains: "yes"
-        }
+      {
+        name: "just test-build",
+        input: {},
+        outputExact: "Test build complete"
+      },
+      {
+        name: "just deploy_prod",
+        input: {},
+        outputExact: "Deploying to prod"
+      }
     ]
   },
   {
-    name: "fail_recipe",
-    justfile: "fail.justfile",
+    name: "mixed_parameters",
+    justfile: "mixed_params.justfile",
     tools: [
-        {
-            name: "just_fail",
-            input: {}, 
-            outputContains: "exit code: 1"
-        }
+      {
+        name: "just deploy",
+        input: { "env": "staging" },
+        outputContains: "Deploying version latest to staging"
+      },
+      {
+        name: "just deploy",
+        input: { "env": "prod", "version": "1.0.0" },
+        outputContains: "Deploying version 1.0.0 to prod"
+      }
     ]
   },
   {
-    name: "polyglot",
-    justfile: "polyglot.just",
+    name: "exit_code_handling",
+    justfile: "exit_codes.justfile",
     tools: [
-        { name: "just_js", input: {}, outputContains: "Greetings from JavaScript!" },
+      {
+        name: "just success",
+        input: {},
+        outputExact: "Success!"
+      },
+      {
+        name: "just failure",
+        input: {},
+        outputContains: "exit code: 1"
+      }
     ]
   }
 ]
