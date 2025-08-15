@@ -1,0 +1,112 @@
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { parseJustList, runCommand, JustRecipe } from './justfile-parser.js';
+import { recipeToTool } from './tool-metadata.js';
+import { existsSync } from 'fs';
+import { resolve as pathResolve } from 'path';
+
+export interface JustMcpOptions {
+	justfile?: string;
+	justBinary?: string;
+	timeout?: number;
+}
+
+export async function validateEnvironment(justBinary: string, justfile: string): Promise<string> {
+	// Try justBinary, then npx just (just-install)
+	let resolvedBinary = justBinary;
+	let found = false;
+	try {
+		await runCommand([justBinary, '--version']);
+		found = true;
+	} catch {}
+	if (!found) {
+		try {
+			await runCommand(['npx', 'just', '--version']);
+			resolvedBinary = 'npx just';
+			found = true;
+		} catch {}
+	}
+	if (!found) {
+		throw new Error(`'just' binary not found: ${justBinary} (also tried npx just)`);
+	}
+	// Check justfile
+	if (!existsSync(justfile)) {
+		throw new Error(`Justfile not found: ${justfile}`);
+	}
+	// Check just --list works
+	const { exitCode, stderr } = await runCommand(resolvedBinary.split(' ').concat(['--list', '--justfile', justfile]));
+	if (exitCode !== 0) {
+		throw new Error(`Cannot list Just recipes: ${stderr}`);
+	}
+	return resolvedBinary;
+}
+
+export async function startJustMcpServer(opts: JustMcpOptions = {}) {
+	const justfile = pathResolve(opts.justfile || 'Justfile');
+	const justBinary = opts.justBinary || 'just';
+	const timeout = typeof opts.timeout === 'number' ? opts.timeout : 30000;
+	let resolvedBinary: string;
+	try {
+		resolvedBinary = await validateEnvironment(justBinary, justfile);
+	} catch (err: any) {
+		console.error('[just-mcp] Startup error:\n', err?.message || err);
+		process.exit(1);
+	}
+	// Use resolvedBinary for all just invocations
+	let recipes: JustRecipe[] = [];
+	try {
+		recipes = await parseJustList(justBinary, justfile);
+	} catch (err: any) {
+		console.error('[just-mcp] Failed to parse Justfile:', err?.message || err);
+		process.exit(1);
+	}
+	const tools = recipes.map(recipeToTool);
+	const server = new Server(
+		{
+			name: 'just-mcp',
+			version: '0.1.0',
+		},
+		{
+			capabilities: { tools: {} },
+		}
+	);
+	server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
+	server.setRequestHandler(CallToolRequestSchema, async (request) => {
+		try {
+			const { name, arguments: args } = request.params;
+			const recipeName = name.replace(/^just_/, '').replace(/_/g, '-');
+			const recipe = recipes.find((r) => r.name === recipeName);
+			if (!recipe) throw new Error(`Unknown tool: ${name}`);
+			// Build just command
+			const cmd = [justBinary, '--justfile', justfile, recipe.name];
+			for (const param of recipe.parameters) {
+				const val = args?.[param.name];
+				if (val !== undefined) cmd.push(String(val));
+			}
+			const { stdout, stderr, exitCode } = await runCommand(cmd, '.', timeout);
+			let resultText = stdout;
+			if (stderr) resultText += `\n[stderr]\n${stderr}`;
+			if (exitCode !== 0) resultText += `\n[exit code: ${exitCode}]`;
+			return { output: resultText };
+		} catch (err: any) {
+			return { output: `[just-mcp] Tool execution error:\n${err?.message || err}` };
+		}
+	});
+	const transport = new StdioServerTransport();
+	// Graceful shutdown on signals
+	process.on('SIGINT', () => {
+		console.error('[just-mcp] Received SIGINT, shutting down.');
+		process.exit(0);
+	});
+	process.on('SIGTERM', () => {
+		console.error('[just-mcp] Received SIGTERM, shutting down.');
+		process.exit(0);
+	});
+	try {
+		await server.connect(transport);
+	} catch (err: any) {
+		console.error('[just-mcp] MCP server error:', err?.message || err);
+		process.exit(1);
+	}
+}

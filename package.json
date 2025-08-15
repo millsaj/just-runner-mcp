@@ -1,0 +1,19 @@
+{
+  "name": "just-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/just-mcp.js",
+  "bin": {
+    "just-mcp": "dist/cli.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "commander": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "just-install": "^2.0.2",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

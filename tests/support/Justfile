@@ -1,0 +1,3 @@
+# Default Justfile for integration test fallback
+hello:
+    echo "Hello from default Justfile"
